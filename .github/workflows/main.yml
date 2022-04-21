@@ -37,10 +37,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      - name: S3 and CloudFront Deploy
-        uses: lbertenasco/s3-deploy@v1.2.4
-        with:
-          folder: build
-          bucket: ${{ secrets.S3_BUCKET }}
-          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-          invalidation: /*
+      - name: Deploy build to S3 bucket
+        run: aws s3 sync ./build/ s3://${{ secrets.S3_BUCKET }} --delete
+
+      - name: Invalidate Cloudfront cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
