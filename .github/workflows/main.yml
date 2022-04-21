@@ -26,6 +26,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - run: npm ci
+
+      - run: npm run build
+
       - name: S3 and CloudFront Deploy
         uses: lbertenasco/s3-deploy@v1.2.4
         with:
